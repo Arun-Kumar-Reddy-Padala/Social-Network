@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Search Users</h2>
+
+<form method="get" action="{% url 'search-users' %}">
+    <input type="text" name="q" placeholder="Search by email or name" required>
+    <button type="submit">Search</button>
+</form>
+
+{% if search_results %}
+<h3>Search Results:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Username &emsp;</th>
+            <th>Name &emsp;</th>
+            <th>Email &emsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in search_results %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No users found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?q={{ query }}&page=1">&laquo; first</a>
+        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">previous</a>
+    {% endif %}
+
+    <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">next</a>
+        <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

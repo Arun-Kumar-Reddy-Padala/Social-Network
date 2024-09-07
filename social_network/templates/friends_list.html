@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Your Friends</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Username &emsp;</th>
+            <th>Name &emsp;</th>
+            <th>Email &emsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for friend in page_obj %}
+        <tr>
+            <td>{{ friend.username }}</td>
+            <td>{{ friend.name }}</td>
+            <td>{{ friend.email }}</td>
+
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">You have no friends yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock %}

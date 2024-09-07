@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between;">
+<h2 style="display:inline-block;">Dashboard</h2>
+    <div style="display:flex; justify-content:space-between;">
+        <form method="get" action="{% url 'list-friends' %}" style="margin-right:5px;">
+    <button type="submit">View Friends</button>
+</form>
+        <form action="{% url 'search-page' %}" style="margin-right:5px;">
+    <button type="submit">Go to Search</button>
+</form>
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+        </div>
+</div>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li class="{{ message.tags }}">
+        {{ message }}
+         <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    </li>
+    {% endfor %}
+</ul>
+
+<script>
+    setTimeout(function() {
+        const messages = document.querySelectorAll('.messages li');
+        messages.forEach(function(message) {
+            message.style.display = 'none';
+        });
+    }, 5000);
+</script>
+{% endif %}
+
+
+
+<h2>Friend Requests</h2>
+
+<h4>Received Requests</h4>
+<ul>
+    {% for request in received_requests %}
+        <li>{{ request.sender.username }} ({{ request.sender.name }})
+            <form method="post" action="{% url 'respond-friend-request' %}" style="margin-top:-25px">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="{{ request.id }}">
+                <button type="submit" name="status" value="accepted">Accept</button>
+                <button type="submit" name="status" value="rejected">Reject</button>
+            </form>
+        </li>
+    {% empty %}
+        <li>No pending requests.</li>
+    {% endfor %}
+</ul>
+
+
+<h4>Sent Requests</h4>
+<ul>
+    {% for request in sent_requests %}
+        {% if request.status == 'pending' %}
+            <li>{{ request.receiver.username }} ({{ request.receiver.name }}) - {{ request.status }}</li>
+        {% endif %}
+    {% empty %}
+        <li>You haven't sent any requests.</li>
+    {% endfor %}
+</ul>
+
+
+{% if error %}
+<p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<div style="display:inline-block">
+    <h2>Send a Friend Request</h2>
+<form method="post" action="{% url 'send-friend-request' %}">
+    {% csrf_token %}
+    <label for="receiver_username">Username of the user:</label>
+    <input type="text" name="receiver" required>
+    <button type="submit">Send Request</button>
+</form>
+    </div>
+
+
+
+
+{% endblock %}

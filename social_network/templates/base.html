@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Social Media</h1>
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li style="display:inline-block">
+                        <form action="{% url 'dashboard' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Dashboard</button>
+                        </form>
+                    </li>
+                    <li style="display:inline-block">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
